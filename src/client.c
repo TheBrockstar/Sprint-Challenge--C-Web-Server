@@ -50,14 +50,16 @@ urlinfo_t *parse_url(char *url)
   ///////////////////
 
   path = strchr(hostname, '/');
-  urlinfo->path = path + 1;
+  urlinfo->path = strdup(path + 1);
   path[0] = '\0';
 
   port = strchr(hostname, ':');
-  urlinfo->port = port + 1;
+  urlinfo->port = strdup(port + 1);
   port[0] = '\0';
 
-  urlinfo->hostname = hostname;
+  urlinfo->hostname = strdup(hostname);
+
+  free(hostname);
 
   return urlinfo;
 }
@@ -114,27 +116,20 @@ int main(int argc, char *argv[])
   // IMPLEMENT ME! //
   ///////////////////
 
-  // urlinfo_t *urlinfo = parse_url(argv[1]);
-  // printf("hostname: %s\nport: %s\n", urlinfo->hostname, urlinfo->port);
-  // sockfd = get_socket(urlinfo->hostname, urlinfo->port);
-
-  // send_request(sockfd, urlinfo->hostname, urlinfo->port, urlinfo->path);
-
-
   urlinfo_t *urlinfo = parse_url(argv[1]);
-  printf("hostname: %s\nport: %s\n", "www.google.com", "80");
-  sockfd = get_socket("www.google.com", "80");
+  printf("hostname: %s\nport: %s\n", urlinfo->hostname, urlinfo->port);
+  sockfd = get_socket(urlinfo->hostname, urlinfo->port);
 
-  send_request(sockfd, "www.google.com", "80", "");
+  send_request(sockfd, urlinfo->hostname, urlinfo->port, urlinfo->path);
 
   while ((numbytes = recv(sockfd, buf, BUFSIZE - 1, 0)) > 0) {
   // printf("%s\n", buf);
   fprintf(stdout, "%s\n", buf);
 }
 
-  // free(urlinfo->hostname);
-  // free(urlinfo->port);
-  // free(urlinfo->path);
+  free(urlinfo->hostname);
+  free(urlinfo->port);
+  free(urlinfo->path);
   free(urlinfo);
 
   close(sockfd);
