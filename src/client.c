@@ -28,7 +28,15 @@ typedef struct urlinfo_t {
 urlinfo_t *parse_url(char *url)
 {
   // copy the input URL so as not to mutate the original
-  char *hostname = strdup(url);
+
+  char *hostname = strchr(url, '/');
+
+  if (hostname[1] == '/') {
+    hostname = strdup(hostname + 2);
+  } else {
+    hostname = strdup(url);
+  }
+
   char *port;
   char *path;
 
@@ -50,10 +58,21 @@ urlinfo_t *parse_url(char *url)
   ///////////////////
 
   path = strchr(hostname, '/');
+
+  if (path == NULL) {
+    port = strdup("/");
+  }
+
   urlinfo->path = strdup(path + 1);
   path[0] = '\0';
 
   port = strchr(hostname, ':');
+
+
+  if (port == NULL) {
+    port = strdup(":80");
+  }
+
   urlinfo->port = strdup(port + 1);
   port[0] = '\0';
 
