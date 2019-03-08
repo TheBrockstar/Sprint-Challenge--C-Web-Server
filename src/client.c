@@ -114,11 +114,18 @@ int main(int argc, char *argv[])
   // IMPLEMENT ME! //
   ///////////////////
 
-  urlinfo_t *urlinfo = parse_url(argv[1]);
-  printf("hostname: %s\nport: %s\n", urlinfo->hostname, urlinfo->port);
-  sockfd = get_socket(urlinfo->hostname, urlinfo->port);
+  // urlinfo_t *urlinfo = parse_url(argv[1]);
+  // printf("hostname: %s\nport: %s\n", urlinfo->hostname, urlinfo->port);
+  // sockfd = get_socket(urlinfo->hostname, urlinfo->port);
 
-  send_request(sockfd, urlinfo->hostname, urlinfo->port, urlinfo->path);
+  // send_request(sockfd, urlinfo->hostname, urlinfo->port, urlinfo->path);
+
+
+  urlinfo_t *urlinfo = parse_url(argv[1]);
+  printf("hostname: %s\nport: %s\n", "www.google.com", "80");
+  sockfd = get_socket("www.google.com", "80");
+
+  send_request(sockfd, "www.google.com", "80", "");
 
   while ((numbytes = recv(sockfd, buf, BUFSIZE - 1, 0)) > 0) {
   // printf("%s\n", buf);
